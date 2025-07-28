@@ -1,0 +1,46 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nginx
+  lables:
+    component: frontend
+    tier: web
+    purpose: deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: frontend
+      tier: web
+      purpose: deployment
+  template:
+    kind: Pod
+    apiVersion:
+    metadata:
+      name: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+---
+
+#creating service to connect
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-lb
+spec:
+  type: LoadBalancer
+  selector:
+    lables:
+      component: frontend
+      tier: web
+      purpose: deployment
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30007
+
+
